@@ -14,12 +14,10 @@ const todo = (state, action) => {
       completed: false
     }
     case 'TOGGLE_TODO':
-      if (state.id !== action.id) {
+      if (state.id !== action.id)
         return state
-      }
-      return Object.assign({}, state, {
-        completed: !state.completed
-      })
+      else
+        return Object.assign({}, state, { completed: !state.completed })
       break;
     default:
       return state
@@ -224,22 +222,28 @@ class TodoApp extends React.Component {
           }}>Add Todo</button>
         <ul>
           {this.props.todos.map(todo =>
-          <li key={todo.id}
-              onClick={() => {
+          <li key={todo.id} onClick={() => {
+              store.dispatch({
+                type: 'TOGGLE_TODO',
+                id: todo.id
+              })
+            }}
+            style={{
+              textDecoration: todo.completed ? 'line-through' : 'none'
+            }}>
+            {todo.text}
+            <button onClick={() => {
                 store.dispatch({
                   type: 'REMOVE_TODO',
                   id: todo.id
                 })
-              }}>
-            {todo.text}
+              }}>Remove</button>
           </li>)}
         </ul>
       </div>
     )
   }
 }
-
-export default TodoApp
 
 const render = () => {
   ReactDOM.render(
