@@ -225,6 +225,43 @@ const FilterLink = ({
   )
 }
 
+// Prensentational component: only handles how things look
+const Todo = ({
+  onClick,
+  completed,
+  text
+}) => (
+  <li
+    onClick={onClick}
+    style={{
+      textDecoration: completed ? 'line-through' : 'none'
+    }}>
+    {text}
+    <button onClick={() => {
+        store.dispatch({
+          type: 'REMOVE_TODO',
+          id: this.props.id
+        })
+      }}>Remove</button>
+  </li>
+)
+
+// Prensentational component: only handles how things look
+const TodoList = ({
+  todos,
+  onTodoClick
+}) => (
+  <ul>
+    {todos.map(todo =>
+      <Todo
+        key={todo.id}
+        {...todo}
+        onClick={() => onTodoClick(todo.id)}
+      />
+    )}
+  </ul>
+)
+
 const getVisibleTodos = ( todos, filter) => {
   switch (filter) {
     case 'SHOW_ALL':
@@ -260,26 +297,15 @@ class TodoApp extends React.Component {
             })
             this.input.value = '';
           }}>Add Todo</button>
-        <ul>
-          {visibleTodos.map(todo =>
-          <li key={todo.id} onClick={() => {
-              store.dispatch({
-                type: 'TOGGLE_TODO',
-                id: todo.id
-              })
-            }}
-            style={{
-              textDecoration: todo.completed ? 'line-through' : 'none'
-            }}>
-            {todo.text}
-            <button onClick={() => {
-                store.dispatch({
-                  type: 'REMOVE_TODO',
-                  id: todo.id
-                })
-              }}>Remove</button>
-          </li>)}
-        </ul>
+        <TodoList
+          todos={visibleTodos}
+          onTodoClick={ id =>
+            store.dispatch({
+              type: 'TOGGLE_TODO',
+              id
+            })
+          }
+        />
           Show:
           <FilterLink
             filter='SHOW_ALL'
