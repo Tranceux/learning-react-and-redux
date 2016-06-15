@@ -266,7 +266,7 @@ const RemoveTodo = ({
   <button onClick={onRemoveTodoClick}>Remove</button>
 )
 
-const AddTodo = (props, { store }) => {
+let AddTodo = ({ dispatch }) => {
   let input;
   return (
     <div>
@@ -274,7 +274,7 @@ const AddTodo = (props, { store }) => {
         input = node
       }} />
       <button onClick={() => {
-        store.dispatch({
+        dispatch({
           type: 'ADD_TODO',
           id: nexTodoId++,
           text: input.value
@@ -284,9 +284,8 @@ const AddTodo = (props, { store }) => {
     </div>
   )
 }
-AddTodo.contextTypes = {
-  store: React.PropTypes.object
-}
+// Default behaviour: not subscribe to the store and inject the dispatch as a prop
+AddTodo = connect()(AddTodo)
 
 class FilterLink extends React.Component {
   componentDidMount() {
@@ -342,13 +341,13 @@ const getVisibleTodos = ( todos, filter) => {
   }
 }
 
-const mapStateToProps = (state) => {
+
+const mapStateToTodoListProps = (state) => {
   return {
     todos: getVisibleTodos(state.todos, state.visibilityFilter)
   }
 }
-
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToTodoListProps = (dispatch) => {
   return {
     onTodoClick: (id) =>
       dispatch({
@@ -357,10 +356,9 @@ const mapDispatchToProps = (dispatch) => {
       })
   }
 }
-
 const VisibleTodoList = connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToTodoListProps,
+  mapDispatchToTodoListProps
 )(TodoList)
 
 let nexTodoId = 0;
