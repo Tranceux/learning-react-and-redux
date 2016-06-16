@@ -1,9 +1,9 @@
-let nexTodoId = 0;
+let nextTodoId = 0;
 
 const addTodo = (text) => {
   return {
     type: 'ADD_TODO',
-    id: nexTodoId++,
+    id: nextTodoId++,
     text
   }
 }
